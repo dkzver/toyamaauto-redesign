@@ -197,6 +197,87 @@
       scrollAnimationFrame = window.requestAnimationFrame(tick);
     }
 
+    var car = hero.querySelector(".mhero-car");
+    var carScrollFrame = null;
+    var previousScrollY = window.pageYOffset;
+    var carOffset = 0;
+    var departureStart = 80;
+    var departureDistance = 480;
+    var departureSoundPlayed = false;
+    var audioContext = null;
+
+    function playDepartureSound() {
+      var AudioContext = window.AudioContext;
+      if (!AudioContext) return;
+
+      if (!audioContext) audioContext = new AudioContext();
+      if (audioContext.state === "suspended") {
+        audioContext.resume().then(createEngineSound).catch(function () {
+          console.warn("Не удалось воспроизвести звук отъезжающего автомобиля.");
+        });
+      } else {
+        createEngineSound();
+      }
+    }
+
+    function createEngineSound() {
+      var now = audioContext.currentTime;
+      var oscillator = audioContext.createOscillator();
+      var filter = audioContext.createBiquadFilter();
+      var volume = audioContext.createGain();
+
+      oscillator.type = "sawtooth";
+      oscillator.frequency.setValueAtTime(55, now);
+      oscillator.frequency.exponentialRampToValueAtTime(185, now + 1.15);
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(260, now);
+      filter.frequency.exponentialRampToValueAtTime(1100, now + 1.15);
+      volume.gain.setValueAtTime(0.0001, now);
+      volume.gain.linearRampToValueAtTime(0.035, now + 0.16);
+      volume.gain.exponentialRampToValueAtTime(0.0001, now + 1.35);
+
+      oscillator.connect(filter);
+      filter.connect(volume);
+      volume.connect(audioContext.destination);
+      oscillator.start(now);
+      oscillator.stop(now + 1.4);
+    }
+
+    function updateCarDeparture() {
+      carScrollFrame = null;
+      if (!car || reducedMotion.matches) return;
+
+      var scrollY = window.pageYOffset;
+      var progress = Math.max(0, Math.min((scrollY - departureStart) / departureDistance, 1));
+      var easedProgress = progress * progress * progress;
+      var currentLeft = car.getBoundingClientRect().left - carOffset;
+      carOffset = (window.innerWidth - currentLeft + 40) * easedProgress;
+      car.style.transform = "translate3d(" + carOffset + "px, 0, 0)";
+      car.style.willChange = progress > 0 && progress < 1 ? "transform" : "";
+    }
+
+    function handleCarDepartureScroll() {
+      var scrollY = window.pageYOffset;
+      if (scrollY < 20) departureSoundPlayed = false;
+      if (!reducedMotion.matches && scrollY > previousScrollY && previousScrollY < departureStart && scrollY >= departureStart && !departureSoundPlayed) {
+        departureSoundPlayed = true;
+        playDepartureSound();
+      }
+      previousScrollY = scrollY;
+      scheduleCarDepartureUpdate();
+    }
+
+    function scheduleCarDepartureUpdate() {
+      if (carScrollFrame !== null) return;
+      carScrollFrame = window.requestAnimationFrame(updateCarDeparture);
+    }
+
+    if (car) {
+      window.addEventListener("scroll", handleCarDepartureScroll, { passive: true });
+      window.addEventListener("resize", scheduleCarDepartureUpdate);
+      scheduleCarDepartureUpdate();
+    }
+
     buttons.forEach(function (button, index) {
       button.addEventListener("mouseenter", function () { activate(index); });
       button.addEventListener("focus", function () { activate(index); });
