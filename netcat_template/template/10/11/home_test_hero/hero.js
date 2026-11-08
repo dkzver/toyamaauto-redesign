@@ -198,6 +198,7 @@
     }
 
     var car = hero.querySelector(".mhero-car");
+    var carWrap = hero.querySelector(".mhero-car__wrap");
     var carScrollFrame = null;
     var previousScrollY = window.pageYOffset;
     var carOffset = 0;
@@ -206,14 +207,29 @@
     var departureSoundPlayed = false;
     var audioContext = null;
 
-    function playDepartureSound() {
-      var AudioContext = window.AudioContext;
-      if (!AudioContext) return;
+    function prepareDepartureAudio() {
+      var AudioContextConstructor = window.AudioContext || window["webkitAudioContext"];
+      if (!AudioContextConstructor || audioContext) return;
 
-      if (!audioContext) audioContext = new AudioContext();
+      try {
+        audioContext = new AudioContextConstructor();
+        if (audioContext.state === "suspended") {
+          audioContext.resume().catch(function (error) {
+            console.warn("Не удалось включить звук отъезжающего автомобиля.", error);
+          });
+        }
+      } catch (error) {
+        console.warn("Не удалось подготовить звук отъезжающего автомобиля.", error);
+      }
+    }
+
+    function playDepartureSound() {
+      prepareDepartureAudio();
+      if (!audioContext) return;
+
       if (audioContext.state === "suspended") {
-        audioContext.resume().then(createEngineSound).catch(function () {
-          console.warn("Не удалось воспроизвести звук отъезжающего автомобиля.");
+        audioContext.resume().then(createEngineSound).catch(function (error) {
+          console.warn("Не удалось воспроизвести звук отъезжающего автомобиля.", error);
         });
       } else {
         createEngineSound();
@@ -233,7 +249,7 @@
       filter.frequency.setValueAtTime(260, now);
       filter.frequency.exponentialRampToValueAtTime(1100, now + 1.15);
       volume.gain.setValueAtTime(0.0001, now);
-      volume.gain.linearRampToValueAtTime(0.035, now + 0.16);
+      volume.gain.linearRampToValueAtTime(0.12, now + 0.16);
       volume.gain.exponentialRampToValueAtTime(0.0001, now + 1.35);
 
       oscillator.connect(filter);
@@ -252,14 +268,14 @@
       var easedProgress = progress * progress * progress;
       var currentLeft = car.getBoundingClientRect().left - carOffset;
       carOffset = (window.innerWidth - currentLeft + 40) * easedProgress;
-      car.style.transform = "translate3d(" + carOffset + "px, 0, 0)";
-      car.style.willChange = progress > 0 && progress < 1 ? "transform" : "";
+      carWrap.style.transform = "translate3d(" + carOffset + "px, 0, 0)";
+      carWrap.style.willChange = progress > 0 && progress < 1 ? "transform" : "";
     }
 
     function handleCarDepartureScroll() {
       var scrollY = window.pageYOffset;
       if (scrollY < 20) departureSoundPlayed = false;
-      if (!reducedMotion.matches && scrollY > previousScrollY && previousScrollY < departureStart && scrollY >= departureStart && !departureSoundPlayed) {
+      if (!reducedMotion.matches && scrollY > previousScrollY && scrollY > departureStart && !departureSoundPlayed) {
         departureSoundPlayed = true;
         playDepartureSound();
       }
@@ -272,9 +288,13 @@
       carScrollFrame = window.requestAnimationFrame(updateCarDeparture);
     }
 
-    if (car) {
+    if (car && carWrap) {
       window.addEventListener("scroll", handleCarDepartureScroll, { passive: true });
       window.addEventListener("resize", scheduleCarDepartureUpdate);
+      window.addEventListener("wheel", prepareDepartureAudio, { passive: true, once: true });
+      window.addEventListener("touchstart", prepareDepartureAudio, { passive: true, once: true });
+      window.addEventListener("pointerdown", prepareDepartureAudio, { passive: true, once: true });
+      window.addEventListener("keydown", prepareDepartureAudio, { once: true });
       scheduleCarDepartureUpdate();
     }
 
