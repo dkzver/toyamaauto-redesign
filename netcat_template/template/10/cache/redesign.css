@@ -511,7 +511,7 @@
 }
 
 .slick-arrow {
-  border-radius: 50% !important;
+  border-radius: 14px !important;
   transition: transform 0.3s var(--rd-spring), background 0.3s ease, box-shadow 0.3s ease !important;
 }
 
@@ -519,6 +519,5 @@
   transform: scale(1.1);
   box-shadow: 0 8px 20px rgba(239, 34, 34, 0.45) !important;
 }
-
 
 
