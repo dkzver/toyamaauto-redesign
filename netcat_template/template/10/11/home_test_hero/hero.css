@@ -32,6 +32,7 @@
 .toyama-home-test .mhero-car__wrap {
   position: relative;
   margin-top: -60px;
+  z-index: 2;
 }
 
 .toyama-home-test .mhero-car {
