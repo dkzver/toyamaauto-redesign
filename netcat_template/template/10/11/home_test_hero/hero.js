@@ -200,10 +200,11 @@
     var car = hero.querySelector(".mhero-car");
     var carWrap = hero.querySelector(".mhero-car__wrap");
     var carScrollFrame = null;
+    var carEntranceFrame = null;
     var previousScrollY = window.pageYOffset;
     var carOffset = 0;
     var departureStart = 80;
-    var departureDistance = 480;
+    var departureDistance = 900;
     var departureSoundPlayed = false;
     var audioContext = null;
 
@@ -272,6 +273,46 @@
       carWrap.style.willChange = progress > 0 && progress < 1 ? "transform" : "";
     }
 
+    function animateCarEntrance() {
+      if (reducedMotion.matches || window.pageYOffset >= departureStart) {
+        scheduleCarDepartureUpdate();
+        return;
+      }
+
+      var startOffset = -car.getBoundingClientRect().right - 40;
+      var startedAt = performance.now();
+      var duration = 1100;
+      carOffset = startOffset;
+      carWrap.style.willChange = "transform";
+      carWrap.style.transform = "translate3d(" + carOffset + "px, 0, 0)";
+      carWrap.offsetWidth;
+
+      function tick(now) {
+        if (window.pageYOffset >= departureStart) {
+          carEntranceFrame = null;
+          carOffset = 0;
+          carWrap.style.transform = "translate3d(0, 0, 0)";
+          scheduleCarDepartureUpdate();
+          return;
+        }
+
+        var progress = Math.min((now - startedAt) / duration, 1);
+        carOffset = startOffset * Math.pow(1 - progress, 3);
+        carWrap.style.transform = "translate3d(" + carOffset + "px, 0, 0)";
+
+        if (progress < 1) {
+          carEntranceFrame = window.requestAnimationFrame(tick);
+        } else {
+          carEntranceFrame = null;
+          carOffset = 0;
+          carWrap.style.transform = "translate3d(0, 0, 0)";
+          carWrap.style.willChange = "";
+        }
+      }
+
+      carEntranceFrame = window.requestAnimationFrame(tick);
+    }
+
     function handleCarDepartureScroll() {
       var scrollY = window.pageYOffset;
       if (scrollY < 20) departureSoundPlayed = false;
@@ -280,6 +321,13 @@
         playDepartureSound();
       }
       previousScrollY = scrollY;
+      if (carEntranceFrame !== null && scrollY < departureStart) return;
+      if (carEntranceFrame !== null && scrollY >= departureStart) {
+        window.cancelAnimationFrame(carEntranceFrame);
+        carEntranceFrame = null;
+        carOffset = 0;
+        carWrap.style.transform = "translate3d(0, 0, 0)";
+      }
       scheduleCarDepartureUpdate();
     }
 
@@ -295,7 +343,7 @@
       window.addEventListener("touchstart", prepareDepartureAudio, { passive: true, once: true });
       window.addEventListener("pointerdown", prepareDepartureAudio, { passive: true, once: true });
       window.addEventListener("keydown", prepareDepartureAudio, { once: true });
-      scheduleCarDepartureUpdate();
+      animateCarEntrance();
     }
 
     buttons.forEach(function (button, index) {
