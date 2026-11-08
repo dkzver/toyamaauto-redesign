@@ -1,0 +1,524 @@
+/* ==========================================================================
+   TOYAMA AUTO — MODERN REDESIGN (BUTTONS, ANIMATIONS, BLOCKS & NEW ICONS)
+   ========================================================================== */
+
+:root {
+  --rd-accent: #ef2222;
+  --rd-accent-bright: #ff3b30;
+  --rd-accent-dark: #b80d0d;
+  --rd-accent-glow: rgba(239, 34, 34, 0.48);
+  --rd-surface-1: #14171c;
+  --rd-surface-2: #1b1f26;
+  --rd-surface-3: #232832;
+  --rd-border: rgba(255, 255, 255, 0.08);
+  --rd-border-hover: rgba(255, 59, 48, 0.45);
+  --rd-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --rd-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* --------------------------------------------------------------------------
+   1. PRIMARY & SECONDARY BUTTONS + STATE TRANSITION ANIMATIONS
+   -------------------------------------------------------------------------- */
+.btn,
+.btn-border,
+.s-request__full-btn,
+.s-request__btn,
+.toyama-footer__contacts .btn,
+.mhero-content > p:first-child {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 16px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transform: translateZ(0);
+  transition:
+    transform 0.35s var(--rd-ease),
+    box-shadow 0.35s var(--rd-ease),
+    background 0.35s var(--rd-ease),
+    border-color 0.3s var(--rd-ease),
+    color 0.3s var(--rd-ease),
+    filter 0.3s var(--rd-ease) !important;
+}
+
+.btn,
+.s-request__full-btn,
+.toyama-footer__contacts .btn {
+  background: linear-gradient(135deg, #ff3126 0%, #e0140e 55%, #b80600 100%) !important;
+  border: 2px solid rgba(255, 120, 110, 0.32) !important;
+  color: #ffffff !important;
+  box-shadow:
+    0 8px 22px -6px rgba(239, 34, 34, 0.52),
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.btn::before,
+.btn-border::before,
+.s-request__full-btn::before,
+.s-request__btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -130%;
+  width: 75%;
+  height: 100%;
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.06) 30%,
+    rgba(255, 255, 255, 0.34) 50%,
+    rgba(255, 255, 255, 0.06) 70%,
+    transparent 100%
+  );
+  transform: skewX(-24deg);
+  transition: left 0.65s var(--rd-ease);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.btn:hover::before,
+.btn-border:hover::before,
+.s-request__full-btn:hover::before,
+.s-request__btn:hover::before,
+.btn:focus-visible::before {
+  left: 145%;
+}
+
+.btn:hover,
+.s-request__full-btn:hover,
+.toyama-footer__contacts .btn:hover {
+  background: linear-gradient(135deg, #ff473d 0%, #f01c15 50%, #cc0902 100%) !important;
+  border-color: rgba(255, 165, 160, 0.6) !important;
+  color: #ffffff !important;
+  transform: translateY(-3px) scale(1.015);
+  box-shadow:
+    0 14px 32px -6px rgba(255, 45, 35, 0.7),
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42) !important;
+  filter: brightness(1.04);
+}
+
+.btn:active,
+.s-request__full-btn:active,
+.toyama-footer__contacts .btn:active {
+  transform: translateY(1px) scale(0.975) !important;
+  box-shadow:
+    0 4px 12px -2px rgba(239, 34, 34, 0.45),
+    inset 0 2px 4px rgba(0, 0, 0, 0.25) !important;
+  filter: brightness(0.96);
+  transition-duration: 0.1s !important;
+}
+
+.btn-border,
+.s-request__btn {
+  background: rgba(255, 255, 255, 0.04) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.btn-border:hover,
+.s-request__btn:hover {
+  background: linear-gradient(135deg, rgba(239, 34, 34, 0.92), rgba(185, 10, 5, 0.95)) !important;
+  border-color: rgba(255, 110, 100, 0.65) !important;
+  color: #ffffff !important;
+  transform: translateY(-3px) scale(1.015);
+  box-shadow:
+    0 12px 28px -6px rgba(239, 34, 34, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+.btn-border:active,
+.s-request__btn:active {
+  transform: translateY(1px) scale(0.975) !important;
+  transition-duration: 0.1s !important;
+}
+
+.btn:focus-visible,
+.btn-border:focus-visible,
+.s-request__full-btn:focus-visible,
+.s-request__btn:focus-visible {
+  outline: 2px solid #ff5247 !important;
+  outline-offset: 3px !important;
+}
+.rd-ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
+  animation: rd-ripple-anim 0.65s var(--rd-ease) forwards;
+  z-index: 2;
+}
+
+@keyframes rd-ripple-anim {
+  to {
+    transform: scale(3.5);
+    opacity: 0;
+  }
+}
+
+/* Messenger & Social Action Buttons */
+.card-row__buttons .msgs__tg,
+.card-row__buttons .max,
+.msgs .msgs__tg,
+.msgs .msgs__max,
+.t-social__link,
+.fav,
+.login-btn {
+  border-radius: 14px !important;
+  transition:
+    transform 0.32s var(--rd-spring),
+    box-shadow 0.32s var(--rd-ease),
+    background 0.3s var(--rd-ease),
+    border-color 0.3s var(--rd-ease) !important;
+}
+
+.card-row__buttons .msgs__tg,
+.msgs .msgs__tg {
+  background: linear-gradient(145deg, rgba(37, 157, 217, 0.16), rgba(37, 157, 217, 0.06)) !important;
+  border: 2px solid rgba(37, 157, 217, 0.35) !important;
+  box-shadow: 0 4px 14px rgba(37, 157, 217, 0.15);
+}
+
+.card-row__buttons .msgs__tg:hover,
+.msgs .msgs__tg:hover {
+  background: linear-gradient(135deg, #29b6f6, #0288d1) !important;
+  border-color: rgba(129, 212, 250, 0.7) !important;
+  transform: translateY(-3px) scale(1.07);
+  box-shadow: 0 10px 22px -4px rgba(37, 157, 217, 0.55);
+}
+
+.card-row__buttons .max,
+.msgs .msgs__max {
+  background: linear-gradient(145deg, rgba(143, 63, 255, 0.18), rgba(143, 63, 255, 0.06)) !important;
+  border: 2px solid rgba(143, 63, 255, 0.38) !important;
+  box-shadow: 0 4px 14px rgba(143, 63, 255, 0.15);
+}
+
+.card-row__buttons .max:hover,
+.msgs .msgs__max:hover {
+  background: linear-gradient(135deg, #a45cff, #6f1fff) !important;
+  border-color: rgba(200, 160, 255, 0.7) !important;
+  transform: translateY(-3px) scale(1.07);
+  box-shadow: 0 10px 22px -4px rgba(143, 63, 255, 0.55);
+}
+
+.card-row__buttons .msgs__tg svg,
+.card-row__buttons .max svg,
+.msgs .msgs__tg svg,
+.msgs .msgs__max svg,
+.t-social__link svg,
+.fav svg {
+  transition: transform 0.32s var(--rd-spring), fill 0.25s ease, stroke 0.25s ease !important;
+}
+
+.card-row__buttons .msgs__tg:hover svg,
+.card-row__buttons .max:hover svg,
+.msgs .msgs__tg:hover svg,
+.msgs .msgs__max:hover svg {
+  transform: scale(1.16) rotate(-6deg);
+  fill: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. HEADER, NAVBAR, DROPDOWNS & FILTER BLOCKS
+   -------------------------------------------------------------------------- */
+.navbar.fixed {
+  background: rgba(16, 18, 23, 0.86) !important;
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45) !important;
+}
+
+.dropdown {
+  border-radius: 24px !important;
+  border: 2px solid rgba(255, 255, 255, 0.09) !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65) !important;
+}
+
+.dropdown__item {
+  border-radius: 16px !important;
+  transition: transform 0.28s var(--rd-ease), background 0.28s var(--rd-ease), box-shadow 0.28s var(--rd-ease) !important;
+}
+
+.dropdown__item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+}
+
+/* Filter Block Redesign */
+.filter {
+  border-radius: 26px !important;
+  padding: 26px 28px !important;
+}
+
+.filter input[type="text"],
+.filter select,
+.select2-container--default .select2-selection--single,
+.select2 {
+  border-radius: 14px !important;
+}
+.filter input[type="text"],
+.filter select,
+.select2-container--default .select2-selection--single {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease !important;
+}
+
+.filter input[type="text"]:focus,
+.filter select:focus,
+.select2-container--default.select2-container--open .select2-selection--single {
+  border-color: rgba(255, 59, 48, 0.65) !important;
+  box-shadow: 0 0 0 3px rgba(239, 34, 34, 0.18) !important;
+  outline: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. CAR CARDS (.card, .card-row) & BADGES
+   -------------------------------------------------------------------------- */
+.card,
+.card-row {
+  background: linear-gradient(165deg, #21252d 0%, #16191f 100%) !important;
+  border: 2px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 26px !important;
+  box-shadow:
+    0 14px 34px -8px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+  transition:
+    transform 0.38s var(--rd-ease),
+    box-shadow 0.38s var(--rd-ease),
+    border-color 0.35s var(--rd-ease) !important;
+}
+
+.card:hover,
+.card-row:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 59, 48, 0.42) !important;
+  box-shadow:
+    0 22px 48px -10px rgba(0, 0, 0, 0.62),
+    0 0 28px -8px rgba(239, 34, 34, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+.card__img,
+.card-row__img {
+  border-radius: 20px !important;
+  overflow: hidden !important;
+}
+
+.card__img img,
+.card-row__img img {
+  transition: transform 0.55s var(--rd-ease), filter 0.4s ease !important;
+}
+
+.card:hover .card__img img,
+.card-row:hover .card-row__img img {
+  transform: scale(1.06);
+  filter: contrast(1.04) brightness(1.03);
+}
+.card-stock__label {
+  border-radius: 10px !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-weight: 600 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.rating {
+  background: rgba(18, 20, 26, 0.85) !important;
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 193, 7, 0.35);
+  border-radius: 10px !important;
+  padding: 5px 10px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.rating svg {
+  fill: #ffb300 !important;
+  filter: drop-shadow(0 0 4px rgba(255, 179, 0, 0.5));
+}
+
+/* --------------------------------------------------------------------------
+   4. ADVANTAGES BLOCK (.advant) & PURCHASE SCHEME (.scheme, .s-request)
+   -------------------------------------------------------------------------- */
+.advant__item,
+.scheme__step {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(239, 34, 34, 0.12) 0%, transparent 60%),
+    linear-gradient(160deg, #21252e 0%, #161920 100%) !important;
+  border: 2px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 28px !important;
+  box-shadow:
+    0 16px 38px -10px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  transition:
+    transform 0.38s var(--rd-ease),
+    box-shadow 0.38s var(--rd-ease),
+    border-color 0.35s var(--rd-ease) !important;
+}
+
+.advant__item:hover,
+.scheme__step:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 59, 48, 0.45) !important;
+  box-shadow:
+    0 24px 48px -12px rgba(0, 0, 0, 0.65),
+    0 0 30px -8px rgba(239, 34, 34, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+.advant__icon,
+.scheme__icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 60px !important;
+  height: 60px !important;
+  border-radius: 18px !important;
+  background: linear-gradient(135deg, rgba(239, 34, 34, 0.18) 0%, rgba(239, 34, 34, 0.05) 100%) !important;
+  border: 2px solid rgba(255, 70, 58, 0.32) !important;
+  box-shadow:
+    0 8px 20px -4px rgba(239, 34, 34, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+  transition:
+    transform 0.4s var(--rd-spring),
+    background 0.35s var(--rd-ease),
+    border-color 0.35s var(--rd-ease),
+    box-shadow 0.35s var(--rd-ease) !important;
+}
+
+.advant__icon svg,
+.scheme__icon svg {
+  width: 30px !important;
+  height: 30px !important;
+  fill: #ff3b30 !important;
+  transition: transform 0.4s var(--rd-spring), fill 0.3s ease, filter 0.3s ease !important;
+}
+
+.advant__item:hover .advant__icon,
+.scheme__step:hover .scheme__icon {
+  transform: scale(1.1) rotate(-4deg);
+  background: linear-gradient(135deg, #ff382e 0%, #c80800 100%) !important;
+  border-color: rgba(255, 160, 150, 0.65) !important;
+  box-shadow: 0 12px 26px -4px rgba(239, 34, 34, 0.6) !important;
+}
+
+.advant__item:hover .advant__icon svg,
+.scheme__step:hover .scheme__icon svg {
+  fill: #ffffff !important;
+  transform: scale(1.08);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+}
+.advant__img,
+.scheme__img {
+  border-radius: 28px !important;
+  overflow: hidden !important;
+  border: 2px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 16px 38px -10px rgba(0, 0, 0, 0.45) !important;
+}
+
+.s-request {
+  background:
+    radial-gradient(circle at 85% 20%, rgba(255, 120, 90, 0.28) 0%, transparent 55%),
+    linear-gradient(135deg, #e31812 0%, #9e0500 100%) !important;
+  border: 2px solid rgba(255, 140, 130, 0.35) !important;
+  border-radius: 28px !important;
+  box-shadow:
+    0 22px 50px -12px rgba(239, 34, 34, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+
+.s-request .s-request__full-btn {
+  background: #ffffff !important;
+  color: #14171c !important;
+  border-color: #ffffff !important;
+  text-shadow: none !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25) !important;
+}
+
+.s-request .s-request__full-btn:hover {
+  background: #14171c !important;
+  color: #ffffff !important;
+  border-color: #14171c !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. PROFESSIONALS, YOUTUBE, NEWS (.preview), FAQ, FOOTER & MODALS
+   -------------------------------------------------------------------------- */
+.toyama-professionals {
+  border-radius: 30px !important;
+  border: 2px solid rgba(255, 255, 255, 0.09) !important;
+  box-shadow: 0 22px 55px -12px rgba(0, 0, 0, 0.55) !important;
+}
+
+.review-card {
+  border-radius: 26px !important;
+  overflow: hidden;
+  transition: transform 0.38s var(--rd-ease), box-shadow 0.38s var(--rd-ease) !important;
+}
+
+.review-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 44px -10px rgba(0, 0, 0, 0.55);
+}
+
+.preview {
+  border-radius: 28px !important;
+  border: 2px solid rgba(255, 255, 255, 0.09) !important;
+  box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.45) !important;
+  transition: transform 0.38s var(--rd-ease), box-shadow 0.38s var(--rd-ease), border-color 0.35s ease !important;
+}
+
+.preview:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 59, 48, 0.45) !important;
+  box-shadow: 0 22px 48px -10px rgba(0, 0, 0, 0.65), 0 0 26px -8px rgba(239, 34, 34, 0.28) !important;
+}
+
+.preview__img {
+  border-radius: 28px !important;
+}
+
+.preview__img img {
+  transition: transform 0.6s var(--rd-ease) !important;
+}
+
+.preview:hover .preview__img img {
+  transform: scale(1.07);
+}
+
+.preview__label {
+  border-radius: 10px !important;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.modal__inner {
+  background: linear-gradient(160deg, #22262f 0%, #15181e 100%) !important;
+  border: 2px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 28px !important;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.75) !important;
+}
+
+.slick-arrow {
+  border-radius: 50% !important;
+  transition: transform 0.3s var(--rd-spring), background 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.slick-arrow:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(239, 34, 34, 0.45) !important;
+}
+
+
+
